@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>Torrent Streamer</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
@@ -11,17 +12,23 @@
         <script src="socket.io/socket.io.js"></script>
         <!--jQuery Used For Some Frontend Tasks-->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-       <p id="progress">Progress: 0%</p>
-       <ul></ul>
+       <div class = "container text-center">
+       <h5 id="progress" class="text-center" style="margin-top: 50px">Progress: 0.0%</h5>
+       <progress id="bar" value = "0" max="100" class="text-center"></progress>
+       <h6>Click link to start streaming</h6>
+       <div id="filenames"></div>
+        </div>
         <script>
             //Connecting To socket.io
             var socket = io.connect(window.location.host);
             socket.on("progress",function(data){
-                $("#progress").html(data);
+                $("#progress").html(data + "%");
+                $('#bar').attr('value',data.split(": ")[1]);
+                 $('#bar').html(data.split(": ")[1]);
             })
 
             socket.on("files",function(data){
-                $("ul").append("<li> <a href=localhost:4000/stream/"+data + ">" + data + "</a></li>");
+                $("#filenames").append("<a href=localhost:4000/stream/"+data + ">" + data + "</a> <br/>");
                 $('a').attr('target','_blank');
             })
             

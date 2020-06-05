@@ -30,13 +30,13 @@ app.post('/torrent',(req, res) =>{
         res.end();
         io.sockets.on("connection",function(socket){
         var interval = setInterval(function(str1, str2) {
-            socket.emit("progress","Progress: " + (torrent.progress*100).toFixed(1) + "%");
+            socket.emit("progress","Progress: " + (torrent.progress*100).toFixed(1));
         }, 2000);
         for (var number in torrent.files){
             socket.emit("files",torrent.files[number].path);
         }
         torrent.on('done', function () {
-            socket.emit("progress","Progress: 100%" );
+            socket.emit("progress","Progress: 100" );
             clearInterval(interval);
         })
 
