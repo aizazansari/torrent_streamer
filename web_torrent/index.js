@@ -43,8 +43,8 @@ app.get('/',(req, res) =>{
 })
 
 
-app.get('/video', function(req, res) {
-  const path = 'Feral.2020.720p.WEBRip.800MB.x264-GalaxyRG[TGx]/Feral.2020.720p.WEBRip.800MB.x264-GalaxyRG.mkv'
+app.get('/stream/:path(*)', function(req, res) {
+  const path = req.params.path
   const stat = fs.statSync(path)
   const fileSize = stat.size
   const range = req.headers.range
