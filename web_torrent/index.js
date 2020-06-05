@@ -14,15 +14,18 @@ var io = require('socket.io').listen(app.listen(4000))
 
 
 
-
-
-
 app.get('/',(req, res) =>{
-	client.add(magnetURI, { path: '/Users/aizazansari/Desktop/Uni Data/Apps/torrent_streamer/web_torrent' }, function (torrent) {
+
+    res.sendFile(process.cwd() + "/public/home.html")
+})
+
+
+app.post('/torrent',(req, res) =>{
+	client.add(req.body.link, { path: process.cwd() }, function (torrent) {
         
         res.writeHead(200,{"Content-Type":"text/html"});
         //Passing HTML To Browser
-        res.write(fs.readFileSync("./public/index.html"));
+        res.write(fs.readFileSync("./public/torrent.html"));
         //Ending Response
         res.end();
         io.sockets.on("connection",function(socket){
