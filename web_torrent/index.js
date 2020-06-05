@@ -28,7 +28,7 @@ app.get('/',(req, res) =>{
         io.sockets.on("connection",function(socket){
         var interval = setInterval(function(str1, str2) {
             socket.emit("progress",torrent.progress*100);
-        }, 1000);
+        }, 2000);
 
       
 })
