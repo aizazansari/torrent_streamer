@@ -2,18 +2,37 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const WebTorrent = require('webtorrent')
+const http = require("http");
+const socketIo = require("socket.io");
 var client = new WebTorrent()
 var magnetURI = 'magnet:?xt=urn:btih:C7B46F7B80349DF21FD1C55A1245E50D18B80C86&dn=Feral.2020.720p.WEBRip.800MB.x264-GalaxyRG+%E2%AD%90&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.cyberia.is%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.iamhansen.xyz%3A2000%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337%2Fannounce&tr=udp%3A%2F%2Fexplodie.org%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.moeking.me%3A6969%2Fannounce&tr=udp%3A%2F%2Fipv4.tracker.harry.lu%3A80%2Fannounce&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2Ftracker.zer0day.to%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Fcoppersurfer.tk%3A6969%2Fannounce'
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+var io = require('socket.io').listen(app.listen(4000))
 
 
 
-app.get('/torrent',(req, res) =>{
-	client.add(magnetURI, { path: '/Users/aizazansari/Desktop/Uni Data/Apps/web_torrent' }, function (torrent) {
-  		console.log(torrent.files)
-  		res.send("wah jee")
+
+
+
+
+app.get('/',(req, res) =>{
+	client.add(magnetURI, { path: '/Users/aizazansari/Desktop/Uni Data/Apps/torrent_streamer/web_torrent' }, function (torrent) {
+        
+        res.writeHead(200,{"Content-Type":"text/html"});
+        //Passing HTML To Browser
+        res.write(fs.readFileSync("./public/index.html"));
+        //Ending Response
+        res.end();
+        io.sockets.on("connection",function(socket){
+        var interval = setInterval(function(str1, str2) {
+            socket.emit("progress",torrent.progress*100);
+        }, 1000);
+
+        //clearInterval(interval);
+        //socket.emit("progress","it going");
+})
  	})
 })
 
@@ -49,7 +68,7 @@ app.get('/video', function(req, res) {
   }
 });
 
-const port = process.env.PORT || 4000;
-app.listen(4000, function () {
-	console.log('App is running on port 4000')
-})
+// const port = process.env.PORT || 4000;
+// server.listen(4000, function () {
+// 	console.log('App is running on port 4000')
+// })
