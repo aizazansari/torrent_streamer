@@ -30,8 +30,7 @@ app.get('/',(req, res) =>{
             socket.emit("progress",torrent.progress*100);
         }, 1000);
 
-        //clearInterval(interval);
-        //socket.emit("progress","it going");
+      
 })
  	})
 })
